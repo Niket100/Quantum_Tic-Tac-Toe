@@ -227,7 +227,7 @@ def cmove(x,y):
 	tem=result.get_counts(circuit).keys()
 	tem = list(tem)
 	circuit_array = tem[0]
-    
+	err=0
 	if pos not in points:
 		if circuit_array[pos-1]=='1':
 			circuit.reset(pos-1)
@@ -246,8 +246,11 @@ def cmove(x,y):
 		global message
 		message.setText('Illegal move')
 		message.draw(win)
+		err=1
 	points.append(pos)
 	modify(pos)
+	return err
+
 
 def qmove(control_bit,target_bit):
 	if target_bit in points and control_bit not in points:
@@ -262,10 +265,12 @@ def qmove(control_bit,target_bit):
 		else:
 			control_pos[control_bit] = [target_bit]
 		print(control_bit,'-',target_bit,' ',"entangled")
+		return 0
 	else :
 		global message
 		message.setText('Illegal move')
 		message.draw(win)
+		return 1
 
 def hmove(x,y):
 	pos = (x*size) + (y+1)
@@ -275,11 +280,13 @@ def hmove(x,y):
 		rec[x][y].setFill('Gray')
 		points.remove(pos)
 		l[x][y] = 0
+		return 0
 
 	else:
 		global message
 		message.setText('Illegal move')
 		message.draw(win)
+		return 1
 
 
 def choice():
@@ -337,10 +344,15 @@ message = Text(Point(boxSize*(size/2),boxSize*size+35),'')
 message.setSize(15)
 message.draw(win)
 turn_txt.draw(win)
+col = ''
 
 while True : 
+	if turn==1 : 
+		col = 'White' 
+	else:
+		col = 'Black'
 	turn_txt.undraw()
-	turn_txt.setText('Turn : Player '+str(turn))
+	turn_txt.setText('Turn : Player '+str(turn)+'('+col+')')
 	turn_txt.draw(win)
 	p = win.getMouse()
 	y = int(p.getX() / boxSize) 
@@ -355,8 +367,10 @@ while True :
 			message.draw(win)
 			continue
 		coord = (x*size) + (y)
-		cmove(x,y)
+		err = cmove(x,y)
 		modify_subscript()
+		if err==1:
+			continue
 	elif ch=='q':
 		if l[x][y] > 0:
 			message.setText('Illegal move')
@@ -367,10 +381,14 @@ while True :
 		xx = int(pp.getY() / boxSize)
 		coord_control = (x*size) + (y+1)
 		coord_target = (xx*size)+ (yy+1)
-		qmove(coord_control,coord_target)
+		err = qmove(coord_control,coord_target)
 		modify_subscript()
+		if err==1:
+			continue
 	elif ch=='h':
-		hmove(x,y)
+		err = hmove(x,y)
+		if err==1:
+			continue
 
 	turn = 3 - turn 
 	status = check()
