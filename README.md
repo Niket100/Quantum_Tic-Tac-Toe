@@ -11,3 +11,4 @@ The game is initialized by an NxN matrix M of cells where each cell is colored g
 
 2) Quantum move : To make this move the player must choose two cells, one marked and one unmarked cell (and therefore can’t be the first move of the game).  After making the move the cells are entangled and measuring the unmarked cell of this pair might cause the marked cell to change it's state and hence it's color. The color of the marked cell will be flipped if the unmarked cell collapses to a black state and the marked cell remain as it is if the unmarked cell collapses to a white state.
 
+3) Hadamard move : To make this move the player must select a marked cell which is not entangeled with any other cell. After applying the move, the cell resets to it's initial grey state i.e. becomes an unmarked cell. 
